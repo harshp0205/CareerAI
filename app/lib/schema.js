@@ -63,3 +63,12 @@ export const coverLetterSchema = z.object({
   jobTitle: z.string().min(1, "Job title is required"),
   jobDescription: z.string().min(1, "Job description is required"),
 });
+// Video Interview Settings Schema
+export const videoInterviewSettingsSchema = z.object({
+  industry: z.string(),
+  role: z.string(),
+  difficulty: z.enum(["beginner", "intermediate", "advanced"]),
+  questionCount: z.number().min(3).max(10).default(5),
+  timePerQuestion: z.number().min(60).max(300).default(120), // seconds
+  includeCategories: z.array(z.enum(["behavioral", "technical", "situational"])),
+});

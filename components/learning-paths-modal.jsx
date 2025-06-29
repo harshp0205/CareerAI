@@ -30,7 +30,7 @@ const LearningPathsModal = ({ children, recommendedSkills, industry }) => {
   // Generate learning paths based on recommended skills
   const learningPaths = recommendedSkills.slice(0, 6).map((skill, index) => {
     const difficulties = ["Beginner", "Intermediate", "Advanced"];
-    const platforms = ["Coursera", "Udemy", "LinkedIn Learning", "Pluralsight", "edX"];
+    const platforms = ["Coursera", "Udemy", "Pluralsight", "edX", "Codecademy"];
     const durations = ["4-6 weeks", "6-8 weeks", "8-12 weeks", "3-4 months"];
     
     return {

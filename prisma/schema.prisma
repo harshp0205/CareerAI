@@ -27,6 +27,7 @@ model User {
   assessments   Assessment[]
   resume        Resume?
   coverLetter   CoverLetter[]
+  videoInterviews VideoInterview[]
 }
 
 model Assessment {
@@ -68,6 +69,45 @@ model CoverLetter {
 
   @@index([userId])
 }
+
+// Video Interview Practice
+model VideoInterview {
+  id            String    @id @default(cuid())
+  userId        String
+  user          User      @relation(fields: [userId], references: [id])
+  sessionId     String    @unique
+  industry      String    // Industry context for questions
+  role          String    // Specific role/position
+  difficulty    String    // "beginner", "intermediate", "advanced"
+  
+  // Questions and responses
+  questions     Json[]    // Array of interview questions
+  responses     Json[]    // Array of user responses with analysis
+  
+  // Metrics and scoring
+  overallScore  Float?    // Overall interview performance score
+  confidenceScore Float? // AI-analyzed confidence level
+  clarityScore  Float?    // Speech clarity and articulation
+  contentScore  Float?    // Content quality and relevance
+  
+  // AI Analysis
+  strengths     String[]  // Identified strengths
+  improvements  String[]  // Areas for improvement
+  feedback      String?   // Detailed AI feedback
+  transcript    String?   // Full interview transcript
+  
+  // Session metadata
+  duration      Int?      // Total session duration in seconds
+  completedAt   DateTime?
+  status        String    @default("in_progress") // "in_progress", "completed", "cancelled"
+  
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([userId])
+  @@index([sessionId])
+}
+
 // Combined Industry Trends and Salary Insights
 model IndustryInsight {
   id            String    @id @default(cuid())

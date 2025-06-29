@@ -29,7 +29,14 @@ CareerAI is a comprehensive full-stack web application built with modern technol
 - **Question Bank**: Comprehensive database of common and role-specific questions
 - **Real-time Scoring**: Instant feedback on responses and communication skills
 
-### 📊 Industry Insights Dashboard
+### 🎥 Video Interview Practice
+- **AI-Powered Simulation**: Practice video interviews with real-time AI analysis
+- **Speech-to-Text Analysis**: Automatic transcription and content evaluation
+- **Confidence Scoring**: AI-driven assessment of confidence and clarity
+- **Behavioral Insights**: Analysis of facial expressions and body language
+- **Comprehensive Feedback**: Detailed improvement suggestions and practice recommendations
+
+###  Industry Insights Dashboard
 - **Market Analysis**: Real-time industry trends and growth statistics
 - **Salary Benchmarking**: Comprehensive salary ranges by role and location
 - **Skills Demand**: Top skills and emerging technology requirements
@@ -141,11 +148,11 @@ CareerAI is a comprehensive full-stack web application built with modern technol
 
 ## 🔮 Future Enhancements
 
-- **LinkedIn Integration**: Direct profile synchronization
-- **Video Interview Practice**: AI-powered video interview simulation
 - **Salary Negotiation Tools**: AI-assisted negotiation guidance
 - **Professional Network**: Connect users with industry mentors
 - **Mobile Application**: Native mobile app development
+- **Advanced Analytics**: Detailed career progression tracking
+- **Team Collaboration**: Features for HR teams and recruiters
 
 ## 🏆 Technical Achievements
 

@@ -9,13 +9,16 @@ export async function updateUser(data) {
   const { userId } = await auth();
   if (!userId) throw new Error("Unauthorized");
 
-  const user = await db.user.findUnique({
-    where: { clerkUserId: userId },
-  });
-
-  if (!user) throw new Error("User not found");
-
   try {
+    // Find the user (should exist since we use checkUser in onboarding)
+    const user = await db.user.findUnique({
+      where: { clerkUserId: userId },
+    });
+
+    if (!user) {
+      throw new Error("User not found. Please refresh and try again.");
+    }
+
     // Start a transaction to handle both operations
     const result = await db.$transaction(
       async (tx) => {
@@ -60,38 +63,9 @@ export async function updateUser(data) {
     );
 
     revalidatePath("/");
-    return result.user;
+    return { success: true, user: result.updatedUser };
   } catch (error) {
     console.error("Error updating user and industry:", error.message);
     throw new Error("Failed to update profile");
-  }
-}
-
-export async function getUserOnboardingStatus() {
-  const { userId } = await auth();
-  if (!userId) throw new Error("Unauthorized");
-
-  const user = await db.user.findUnique({
-    where: { clerkUserId: userId },
-  });
-
-  if (!user) throw new Error("User not found");
-
-  try {
-    const user = await db.user.findUnique({
-      where: {
-        clerkUserId: userId,
-      },
-      select: {
-        industry: true,
-      },
-    });
-
-    return {
-      isOnboarded: !!user?.industry,
-    };
-  } catch (error) {
-    console.error("Error checking onboarding status:", error);
-    throw new Error("Failed to check onboarding status");
   }
 }

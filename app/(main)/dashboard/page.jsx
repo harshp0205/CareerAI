@@ -1,14 +1,17 @@
 import { getIndustryInsights } from "@/actions/dashboard";
 import DashboardView from "./_component/dashboard-view";
-import { getUserOnboardingStatus } from "@/actions/user";
+import { checkUser } from "@/lib/checkUser";
 import { redirect } from "next/navigation";
 
 export default async function DashboardPage() {
-  const { isOnboarded } = await getUserOnboardingStatus();
+  const user = await checkUser();
+
+  if (!user) {
+    redirect("/sign-in");
+  }
 
   // If not onboarded, redirect to onboarding page
-  // Skip this check if already on the onboarding page
-  if (!isOnboarded) {
+  if (!user.industry) {
     redirect("/onboarding");
   }
 

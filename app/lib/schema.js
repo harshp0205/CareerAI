@@ -69,6 +69,8 @@ export const videoInterviewSettingsSchema = z.object({
   role: z.string(),
   difficulty: z.enum(["beginner", "intermediate", "advanced"]),
   questionCount: z.number().min(3).max(10).default(5),
-  timePerQuestion: z.number().min(60).max(300).default(120), // seconds
+  timePerQuestion: z.number().min(30).max(300).default(120), // seconds
   includeCategories: z.array(z.enum(["behavioral", "technical", "situational"])),
+  questionTypes: z.array(z.enum(["detailed", "short", "one-liner"])).default(["detailed"]),
+  analysisLevel: z.enum(["basic", "detailed", "comprehensive"]).default("detailed"),
 });

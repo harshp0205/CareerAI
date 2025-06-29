@@ -50,6 +50,18 @@ const QUESTION_CATEGORIES = [
   { value: "situational", label: "Situational", description: "Hypothetical scenarios" },
 ];
 
+const QUESTION_TYPES = [
+  { value: "detailed", label: "Detailed Questions", description: "2-3 minute comprehensive responses", timeRange: "120-180s" },
+  { value: "short", label: "Short Questions", description: "30-60 second focused answers", timeRange: "30-60s" },
+  { value: "one-liner", label: "Quick Questions", description: "10-20 second rapid responses", timeRange: "10-20s" },
+];
+
+const ANALYSIS_LEVELS = [
+  { value: "basic", label: "Basic Analysis", description: "Simple scoring and feedback" },
+  { value: "detailed", label: "Detailed Analysis", description: "Comprehensive feedback with suggestions" },
+  { value: "comprehensive", label: "AI Coach Mode", description: "In-depth analysis with personalized coaching" },
+];
+
 export default function VideoInterviewPractice() {
   // State for interview setup
   const [step, setStep] = useState("setup"); // setup, interview, results
@@ -60,6 +72,8 @@ export default function VideoInterviewPractice() {
     questionCount: 5,
     timePerQuestion: 120,
     includeCategories: ["behavioral", "technical"],
+    questionTypes: ["detailed"],
+    analysisLevel: "detailed",
   });
 
   // State for interview session
@@ -361,6 +375,64 @@ export default function VideoInterviewPractice() {
               </div>
             </div>
 
+            {/* Question Types */}
+            <div className="space-y-2">
+              <Label>Question Types</Label>
+              <div className="space-y-2">
+                {QUESTION_TYPES.map((type) => (
+                  <label key={type.value} className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      checked={settings.questionTypes.includes(type.value)}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          setSettings(prev => ({
+                            ...prev,
+                            questionTypes: [...prev.questionTypes, type.value]
+                          }));
+                        } else {
+                          setSettings(prev => ({
+                            ...prev,
+                            questionTypes: prev.questionTypes.filter(t => t !== type.value)
+                          }));
+                        }
+                      }}
+                      className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                    />
+                    <div>
+                      <span className="font-medium">{type.label}</span>
+                      <span className="text-sm text-muted-foreground ml-2">
+                        {type.description} ({type.timeRange})
+                      </span>
+                    </div>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            {/* AI Analysis Level */}
+            <div className="space-y-2">
+              <Label>AI Analysis Level</Label>
+              <Select 
+                value={settings.analysisLevel} 
+                onValueChange={(value) => setSettings(prev => ({ ...prev, analysisLevel: value }))}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {ANALYSIS_LEVELS.map((level) => (
+                    <SelectItem key={level.value} value={level.value}>
+                      <div>
+                        <div className="font-medium">{level.label}</div>
+                        <div className="text-sm text-muted-foreground">{level.description}</div>
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
             {/* Question Count */}
             <div className="space-y-2">
               <Label>Number of Questions: {settings.questionCount}</Label>
@@ -376,12 +448,15 @@ export default function VideoInterviewPractice() {
 
             {/* Time per Question */}
             <div className="space-y-2">
-              <Label>Time per Question: {formatTime(settings.timePerQuestion)}</Label>
+              <Label>Default Time per Question: {formatTime(settings.timePerQuestion)}</Label>
+              <p className="text-sm text-muted-foreground">
+                Note: Actual time will be set based on question type (One-liners: 10-20s, Short: 30-60s, Detailed: 2-3min)
+              </p>
               <input
                 type="range"
-                min="60"
+                min="30"
                 max="300"
-                step="30"
+                step="15"
                 value={settings.timePerQuestion}
                 onChange={(e) => setSettings(prev => ({ ...prev, timePerQuestion: parseInt(e.target.value) }))}
                 className="w-full"
@@ -390,19 +465,19 @@ export default function VideoInterviewPractice() {
 
             <Button 
               onClick={handleStartInterview}
-              disabled={createLoading || !settings.industry || !settings.role || settings.includeCategories.length === 0}
+              disabled={createLoading || !settings.industry || !settings.role || settings.includeCategories.length === 0 || settings.questionTypes.length === 0}
               className="w-full"
               size="lg"
             >
               {createLoading ? (
                 <>
                   <div className="w-4 h-4 mr-2 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                  Creating Session...
+                  Creating AI Interview Session...
                 </>
               ) : (
                 <>
                   <Video className="w-4 h-4 mr-2" />
-                  Start Interview Practice
+                  Start AI Interview Practice
                 </>
               )}
             </Button>
@@ -426,13 +501,21 @@ export default function VideoInterviewPractice() {
               <h2 className="text-2xl font-bold">
                 Question {currentQuestionIndex + 1} of {currentSession.questions.length}
               </h2>
-              <Badge variant="outline" className="text-lg px-3 py-1">
-                {currentQuestion.category}
-              </Badge>
+              <div className="flex gap-2">
+                <Badge variant="outline" className="text-lg px-3 py-1">
+                  {currentQuestion.category}
+                </Badge>
+                <Badge 
+                  variant={currentQuestion.type === 'one-liner' ? 'default' : currentQuestion.type === 'short' ? 'secondary' : 'outline'}
+                  className="text-lg px-3 py-1"
+                >
+                  {currentQuestion.type === 'one-liner' ? 'Quick' : currentQuestion.type === 'short' ? 'Short' : 'Detailed'}
+                </Badge>
+              </div>
             </div>
             <Progress value={progress} className="mb-2" />
             <p className="text-sm text-muted-foreground">
-              {Math.round(progress)}% Complete
+              {Math.round(progress)}% Complete • {currentQuestion.type === 'one-liner' ? '10-20 seconds' : currentQuestion.type === 'short' ? '30-60 seconds' : '2-3 minutes'} response time
             </p>
           </CardContent>
         </Card>
@@ -542,28 +625,73 @@ export default function VideoInterviewPractice() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="p-4 bg-blue-50 dark:bg-blue-950 rounded-lg border border-blue-200 dark:border-blue-800">
+                <div className={`p-4 rounded-lg border ${
+                  currentQuestion.type === 'one-liner' 
+                    ? 'bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800'
+                    : currentQuestion.type === 'short'
+                    ? 'bg-yellow-50 dark:bg-yellow-950 border-yellow-200 dark:border-yellow-800'
+                    : 'bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800'
+                }`}>
                   <p className="text-lg font-medium leading-relaxed">
                     {currentQuestion.question}
                   </p>
                 </div>
-                
-                <div className="space-y-2">
-                  <h4 className="font-medium">Key Points to Cover:</h4>
-                  <ul className="text-sm text-muted-foreground space-y-1">
-                    {currentQuestion.keyPoints?.map((point, index) => (
-                      <li key={index} className="flex items-start gap-2">
-                        <span className="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1.5 flex-shrink-0" />
-                        {point}
-                      </li>
-                    ))}
-                  </ul>
+
+                {/* Question Type Guidance */}
+                <div className={`p-3 rounded-lg text-sm ${
+                  currentQuestion.type === 'one-liner' 
+                    ? 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200'
+                    : currentQuestion.type === 'short'
+                    ? 'bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200'
+                    : 'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200'
+                }`}>
+                  <strong>
+                    {currentQuestion.type === 'one-liner' 
+                      ? '⚡ Quick Response: ' 
+                      : currentQuestion.type === 'short'
+                      ? '🎯 Short & Focused: '
+                      : '📝 Detailed Answer: '}
+                  </strong>
+                  {currentQuestion.type === 'one-liner' 
+                    ? 'Give a brief, direct answer in 10-20 seconds. Be concise and to the point.'
+                    : currentQuestion.type === 'short'
+                    ? 'Provide a focused 30-60 second response covering the main points.'
+                    : 'Take 2-3 minutes to give a comprehensive answer with examples and details.'}
                 </div>
+                
+                {currentQuestion.keyPoints && currentQuestion.keyPoints.length > 0 && (
+                  <div className="space-y-2">
+                    <h4 className="font-medium">
+                      {currentQuestion.type === 'one-liner' ? 'Key Point:' : 'Key Points to Cover:'}
+                    </h4>
+                    <ul className="text-sm text-muted-foreground space-y-1">
+                      {currentQuestion.keyPoints?.slice(0, currentQuestion.type === 'one-liner' ? 1 : undefined).map((point, index) => (
+                        <li key={index} className="flex items-start gap-2">
+                          <span className="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1.5 flex-shrink-0" />
+                          {point}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                
+                {currentQuestion.sampleAnswerOutline && (
+                  <div className="space-y-2">
+                    <h4 className="font-medium">💡 Answer Outline:</h4>
+                    <p className="text-sm text-muted-foreground italic">
+                      {currentQuestion.sampleAnswerOutline}
+                    </p>
+                  </div>
+                )}
                 
                 <Alert>
                   <AlertCircle className="w-4 h-4" />
                   <AlertDescription>
-                    Take your time to think before recording. You have {formatTime(currentQuestion.timeLimit)} for this question.
+                    {currentQuestion.type === 'one-liner' 
+                      ? `⏱️ Keep it brief: You have ${formatTime(currentQuestion.timeLimit)} for this quick question.`
+                      : currentQuestion.type === 'short'
+                      ? `⏱️ Stay focused: You have ${formatTime(currentQuestion.timeLimit)} for this short answer.`
+                      : `⏱️ Take your time: You have ${formatTime(currentQuestion.timeLimit)} to give a detailed response.`}
                   </AlertDescription>
                 </Alert>
                 

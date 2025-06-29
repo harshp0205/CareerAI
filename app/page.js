@@ -13,40 +13,56 @@ import {
   Zap,
   CheckCircle2,
   Star,
+  Video,
+  Camera,
+  PlayCircle,
 } from "lucide-react";
 import HeroSection from "@/components/hero";
 
 export default function LandingPage() {
   const features = [
     {
+      icon: <Video className="w-8 h-8 text-red-600" />,
+      title: "AI Video Interview Practice",
+      description: "Practice video interviews with AI-powered real-time feedback and analysis",
+      featured: true,
+      link: "/video-interview"
+    },
+    {
       icon: <Brain className="w-8 h-8 text-purple-600" />,
       title: "AI Resume Builder",
-      description: "Create ATS-optimized resumes with intelligent suggestions and formatting"
+      description: "Create ATS-optimized resumes with intelligent suggestions and formatting",
+      link: "/resume"
     },
     {
       icon: <Target className="w-8 h-8 text-blue-600" />,
       title: "Interview Preparation",
-      description: "Practice with AI-powered mock interviews tailored to your industry"
+      description: "Practice with AI-powered mock interviews tailored to your industry",
+      link: "/interview"
     },
     {
       icon: <FileText className="w-8 h-8 text-green-600" />,
       title: "Cover Letter Generator",
-      description: "Generate personalized cover letters that stand out to employers"
+      description: "Generate personalized cover letters that stand out to employers",
+      link: "/ai-cover-letter"
     },
     {
       icon: <TrendingUp className="w-8 h-8 text-orange-600" />,
       title: "Industry Insights",
-      description: "Get real-time market trends and salary insights for your field"
+      description: "Get real-time market trends and salary insights for your field",
+      link: "/dashboard"
     }
   ];
 
   const benefits = [
+    "AI-powered video interview practice with real-time feedback",
     "Personalized AI career guidance",
     "Industry-specific interview preparation",
     "ATS-optimized resume templates",
     "Real-time market insights",
     "24/7 AI assistant support",
-    "Progress tracking and analytics"
+    "Progress tracking and analytics",
+    "Video interview confidence scoring"
   ];
 
   return (
@@ -66,23 +82,53 @@ export default function LandingPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
             {features.map((feature, index) => (
-              <Card key={index} className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900">
-                <CardContent className="p-8 text-center">
-                  <div className="flex justify-center mb-4">
-                    <div className="w-16 h-16 bg-gradient-to-br from-purple-100 to-blue-100 dark:from-purple-900 dark:to-blue-900 rounded-2xl flex items-center justify-center">
-                      {feature.icon}
+              <Link key={index} href={feature.link || "#"} className={feature.featured ? "md:col-span-2 lg:col-span-2" : ""}>
+                <Card className={`border-0 shadow-lg hover:shadow-xl transition-all duration-300 h-full cursor-pointer transform hover:scale-105 ${
+                  feature.featured 
+                    ? "bg-gradient-to-br from-red-50 to-pink-50 dark:from-red-950 dark:to-pink-950 border-2 border-red-200 dark:border-red-800" 
+                    : "bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900"
+                }`}>
+                  <CardContent className={`p-8 text-center h-full flex flex-col justify-center ${feature.featured ? "relative" : ""}`}>
+                    {feature.featured && (
+                      <div className="absolute top-4 right-4">
+                        <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full font-bold">NEW</span>
+                      </div>
+                    )}
+                    <div className="flex justify-center mb-4">
+                      <div className={`w-16 h-16 rounded-2xl flex items-center justify-center ${
+                        feature.featured 
+                          ? "bg-gradient-to-br from-red-100 to-pink-100 dark:from-red-900 dark:to-pink-900" 
+                          : "bg-gradient-to-br from-purple-100 to-blue-100 dark:from-purple-900 dark:to-blue-900"
+                      }`}>
+                        {feature.icon}
+                      </div>
                     </div>
-                  </div>
-                  <h3 className="text-xl font-semibold mb-3 text-gray-900 dark:text-white">
-                    {feature.title}
-                  </h3>
-                  <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
-                    {feature.description}
-                  </p>
-                </CardContent>
-              </Card>
+                    <h3 className={`text-xl font-semibold mb-3 ${
+                      feature.featured 
+                        ? "text-red-900 dark:text-red-100" 
+                        : "text-gray-900 dark:text-white"
+                    }`}>
+                      {feature.title}
+                    </h3>
+                    <p className={`leading-relaxed ${
+                      feature.featured 
+                        ? "text-red-700 dark:text-red-300" 
+                        : "text-gray-600 dark:text-gray-400"
+                    }`}>
+                      {feature.description}
+                    </p>
+                    {feature.featured && (
+                      <div className="mt-4">
+                        <Button className="bg-red-600 hover:bg-red-700 text-white">
+                          Try Now <PlayCircle className="ml-2 h-4 w-4" />
+                        </Button>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </Link>
             ))}
           </div>
         </div>
@@ -166,6 +212,12 @@ export default function LandingPage() {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link href="/video-interview">
+                <Button size="lg" className="bg-red-600 hover:bg-red-700 text-white px-8 py-4 rounded-xl shadow-lg">
+                  Try Video Interview AI
+                  <Video className="ml-2 h-5 w-5" />
+                </Button>
+              </Link>
               <Link href="/sign-up">
                 <Button size="lg" variant="secondary" className="bg-white text-purple-600 hover:bg-gray-100 px-8 py-4 rounded-xl shadow-lg">
                   Start Free Trial

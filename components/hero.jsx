@@ -3,7 +3,7 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { ArrowRight, Sparkles, Brain, Target } from "lucide-react";
+import { ArrowRight, Sparkles, Brain, Target, Video, Camera } from "lucide-react";
 
 const HeroSection = () => {
   return (
@@ -33,7 +33,7 @@ const HeroSection = () => {
               <span className="text-4xl md:text-5xl lg:text-6xl">with AI Guidance</span>
             </h1>
             <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed">
-              Get personalized career coaching, optimize your resume, practice interviews, and receive industry insights powered by advanced AI technology.
+              Get personalized career coaching, practice video interviews with AI feedback, optimize your resume, and receive industry insights powered by advanced AI technology.
             </p>
           </div>
 
@@ -53,7 +53,20 @@ const HeroSection = () => {
           </div>
 
           {/* Feature Icons */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-16 max-w-4xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 pt-16 max-w-5xl mx-auto">
+            <div className="flex flex-col items-center space-y-3 p-6 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20 relative">
+              <div className="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full font-bold animate-pulse">
+                NEW
+              </div>
+              <div className="w-12 h-12 bg-gradient-to-br from-red-500 to-red-600 rounded-xl flex items-center justify-center">
+                <Video className="w-6 h-6 text-white" />
+              </div>
+              <h3 className="font-semibold text-lg">Video Interview AI</h3>
+              <p className="text-gray-600 dark:text-gray-400 text-sm text-center">
+                Practice with real-time AI feedback
+              </p>
+            </div>
+
             <div className="flex flex-col items-center space-y-3 p-6 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20">
               <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center">
                 <Brain className="w-6 h-6 text-white" />
@@ -69,7 +82,7 @@ const HeroSection = () => {
                 <Target className="w-6 h-6 text-white" />
               </div>
               <h3 className="font-semibold text-lg">Interview Prep</h3>
-              <p className="text-gray-600 dark:text-gray-400 text-sm text-center">
+              <p className="text-gray-600 dark:text-gray-400 text-center">
                 Practice with AI-powered mock interviews
               </p>
             </div>

@@ -36,6 +36,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
+import LearningPathsModal from "@/components/learning-paths-modal";
 
 const DashboardView = ({ insights }) => {
   // Transform salary data for the chart
@@ -330,9 +331,14 @@ const DashboardView = ({ insights }) => {
                   </Badge>
                 ))}
               </div>
-              <Button className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700">
-                Explore Learning Paths
-              </Button>
+              <LearningPathsModal 
+                recommendedSkills={insights.recommendedSkills} 
+                industry={insights.industry || "Technology"}
+              >
+                <Button className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700">
+                  Explore Learning Paths
+                </Button>
+              </LearningPathsModal>
             </CardContent>
           </Card>
         </div>

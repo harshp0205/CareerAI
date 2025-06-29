@@ -147,57 +147,80 @@ export default function ResumeBuilder({ initialContent }) {
   };
 
   return (
-    <div data-color-mode="light" className="space-y-4">
-      <div className="flex flex-col md:flex-row justify-between items-center gap-2">
-        <h1 className="font-bold gradient-title text-5xl md:text-6xl">
-          Resume Builder
-        </h1>
-        <div className="space-x-2">
-          <Button
-            variant="destructive"
-            onClick={handleSubmit(onSubmit)}
-            disabled={isSaving}
-          >
-            {isSaving ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Saving...
-              </>
-            ) : (
-              <>
-                <Save className="h-4 w-4" />
-                Save
-              </>
-            )}
-          </Button>
-          <Button onClick={generatePDF} disabled={isGenerating}>
-            {isGenerating ? (
-              <>
-                <Loader2 className="h-4 w-4 animate-spin" />
-                Generating PDF...
-              </>
-            ) : (
-              <>
-                <Download className="h-4 w-4" />
-                Download PDF
-              </>
-            )}
-          </Button>
+    <div data-color-mode="light" className="max-w-7xl mx-auto space-y-8">
+      {/* Header Section */}
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border-0 p-8">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+              Resume Builder
+            </h2>
+            <p className="text-gray-600 dark:text-gray-400">
+              Create and customize your professional resume
+            </p>
+          </div>
+          
+          <div className="flex gap-3">
+            <Button
+              onClick={handleSubmit(onSubmit)}
+              disabled={isSaving}
+              className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white rounded-xl"
+            >
+              {isSaving ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Saving...
+                </>
+              ) : (
+                <>
+                  <Save className="h-4 w-4 mr-2" />
+                  Save Resume
+                </>
+              )}
+            </Button>
+            
+            <Button 
+              onClick={generatePDF} 
+              disabled={isGenerating}
+              variant="outline"
+              className="rounded-xl border-2"
+            >
+              {isGenerating ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                  Generating...
+                </>
+              ) : (
+                <>
+                  <Download className="h-4 w-4 mr-2" />
+                  Download PDF
+                </>
+              )}
+            </Button>
+          </div>
         </div>
       </div>
 
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList>
-          <TabsTrigger value="edit">Form</TabsTrigger>
-          <TabsTrigger value="preview">Markdown</TabsTrigger>
-        </TabsList>
+      {/* Main Content */}
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border-0 overflow-hidden">
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
+          <div className="border-b border-gray-200 dark:border-gray-700 px-8 pt-6">
+            <TabsList className="bg-gray-100 dark:bg-gray-700 p-1 rounded-xl">
+              <TabsTrigger value="edit" className="rounded-lg px-6 py-2">
+                Form Builder
+              </TabsTrigger>
+              <TabsTrigger value="preview" className="rounded-lg px-6 py-2">
+                Preview & Edit
+              </TabsTrigger>
+            </TabsList>
+          </div>
 
-        <TabsContent value="edit">
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-            {/* Contact Information */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-medium">Contact Information</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 border rounded-lg bg-muted/50">
+          <TabsContent value="edit" className="p-8">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+              {/* Contact Information */}
+              <div className="space-y-4">
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-white">Contact Information</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 rounded-xl border border-purple-200 dark:border-purple-700">
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Email</label>
                   <Input
@@ -361,59 +384,67 @@ export default function ResumeBuilder({ initialContent }) {
           </form>
         </TabsContent>
 
-        <TabsContent value="preview">
-          {activeTab === "preview" && (
-            <Button
-              variant="link"
-              type="button"
-              className="mb-2"
-              onClick={() =>
-                setResumeMode(resumeMode === "preview" ? "edit" : "preview")
-              }
-            >
-              {resumeMode === "preview" ? (
-                <>
-                  <Edit className="h-4 w-4" />
-                  Edit Resume
-                </>
-              ) : (
-                <>
-                  <Monitor className="h-4 w-4" />
-                  Show Preview
-                </>
-              )}
-            </Button>
-          )}
+        <TabsContent value="preview" className="p-8">
+          <div className="space-y-4">
+            {activeTab === "preview" && (
+              <div className="flex justify-between items-center">
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-white">Resume Preview</h3>
+                <Button
+                  variant="outline"
+                  type="button"
+                  className="rounded-lg"
+                  onClick={() =>
+                    setResumeMode(resumeMode === "preview" ? "edit" : "preview")
+                  }
+                >
+                  {resumeMode === "preview" ? (
+                    <>
+                      <Edit className="h-4 w-4 mr-2" />
+                      Edit Markdown
+                    </>
+                  ) : (
+                    <>
+                      <Monitor className="h-4 w-4 mr-2" />
+                      Show Preview
+                    </>
+                  )}
+                </Button>
+              </div>
+            )}
 
-          {activeTab === "preview" && resumeMode !== "preview" && (
-            <div className="flex p-3 gap-2 items-center border-2 border-yellow-600 text-yellow-600 rounded mb-2">
-              <AlertTriangle className="h-5 w-5" />
-              <span className="text-sm">
-                You will lose editied markdown if you update the form data.
-              </span>
-            </div>
-          )}
-          <div className="border rounded-lg">
-            <MDEditor
-              value={previewContent}
-              onChange={setPreviewContent}
-              height={800}
-              preview={resumeMode}
-            />
-          </div>
-          <div className="hidden">
-            <div id="resume-pdf">
-              <MDEditor.Markdown
-                source={previewContent}
-                style={{
-                  background: "white",
-                  color: "black",
-                }}
+            {activeTab === "preview" && resumeMode !== "preview" && (
+              <div className="flex p-4 gap-3 items-center bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 text-yellow-700 dark:text-yellow-300 rounded-xl">
+                <AlertTriangle className="h-5 w-5 flex-shrink-0" />
+                <span className="text-sm">
+                  Warning: You will lose your markdown edits if you update the form data.
+                </span>
+              </div>
+            )}
+            
+            <div className="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
+              <MDEditor
+                value={previewContent}
+                onChange={setPreviewContent}
+                height={800}
+                preview={resumeMode}
               />
+            </div>
+            
+            <div className="hidden">
+              <div id="resume-pdf">
+                <MDEditor.Markdown
+                  source={previewContent}
+                  style={{
+                    background: "white",
+                    color: "black",
+                  }}
+                />
+              </div>
             </div>
           </div>
         </TabsContent>
       </Tabs>
+      </div>
     </div>
   );
 }
